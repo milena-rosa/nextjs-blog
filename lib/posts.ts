@@ -6,21 +6,32 @@ import html from "remark-html";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getSortedPostsData() {
+interface PostData {
+  id: string;
+  date: string;
+  title: string;
+}
+
+export function getSortedPostsData(): PostData[] {
   const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.md$/, "");
+  const allPostsData = fileNames.map(
+    (fileName): PostData => {
+      const id = fileName.replace(/\.md$/, "");
 
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, "utf-8");
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf-8");
 
-    const matterResult = matter(fileContents);
+      const matterResult = matter(fileContents);
 
-    return {
-      id,
-      ...matterResult.data,
-    };
-  });
+      return {
+        id,
+        date: matterResult.data.date,
+        title: matterResult.data.title,
+      };
+    }
+  );
+
+  console.log("xxxxxxxxxxx", allPostsData);
 
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {

@@ -5,8 +5,19 @@ import Layout, { siteTitle } from "../components/layout";
 import utilStyles from "../styles/utils.module.css";
 import { getSortedPostsData } from "../lib/posts";
 import Date from "../components/date";
+import { GetStaticProps } from "next";
 
-export default function Home({ allPostsData }) {
+interface PostData {
+  id: string;
+  date: string;
+  title: string;
+}
+
+interface Params {
+  allPostsData: PostData[];
+}
+
+export default function Home({ allPostsData }: Params) {
   return (
     <Layout home>
       <Head>
@@ -40,11 +51,11 @@ export default function Home({ allPostsData }) {
   );
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   const allPostsData = getSortedPostsData();
   return {
     props: {
       allPostsData,
     },
   };
-}
+};
